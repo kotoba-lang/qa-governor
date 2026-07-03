@@ -8,9 +8,16 @@
 (def ^:private thin-test-source
   "(deftest basic-test\n  (is (= 1 1)))\n")
 
+(def ^:private structured-error-test-source
+  "(deftest chain-verify-test\n  (is (some #(= :chain/not-verified (:problem %)) problems))\n  (is (= {:kotoba.cli/ok? false :kotoba.cli/code :check/invalid} (fake-host))))\n")
+
 (deftest count-error-path-assertions-test
-  (is (= 2 (robustness/count-error-path-assertions rich-test-source)))
-  (is (= 0 (robustness/count-error-path-assertions thin-test-source))))
+  (testing "例外ベース(thrown?)を数える"
+    (is (= 2 (robustness/count-error-path-assertions rich-test-source))))
+  (testing "構造化Result型ベース(:problem/ok? false、名前空間付きキーワードも)を数える"
+    (is (= 2 (robustness/count-error-path-assertions structured-error-test-source))))
+  (testing "どちらも無ければ0"
+    (is (= 0 (robustness/count-error-path-assertions thin-test-source)))))
 
 (deftest count-guard-tests-test
   (is (= 2 (robustness/count-guard-tests rich-test-source)))
