@@ -1,0 +1,23 @@
+(ns qa-governor.collectors.clojure-project-shell
+  "kotoba-lang/qa-governor — JVM host adapter that actually shells out to
+  `clojure -M:test` / `clojure -M:lint` in a project directory and hands the
+  captured output to the pure parsers in `qa-governor.collectors.clojure-project`
+  (ADR-2607031100). This is where real I/O happens; everything else in this
+  library stays pure and host-free."
+  (:require [clojure.java.shell :refer [sh]]
+            [qa-governor.collectors.clojure-project :as collector]))
+
+(defn run-test+lint
+  "project-dirで`clojure -M:test`と`clojure -M:lint`を実行し、
+   {:test-output ... :lint-output ...}(stdout+stderrの結合文字列)を返す。"
+  [project-dir]
+  (let [test-result (sh "clojure" "-M:test" :dir project-dir)
+        lint-result (sh "clojure" "-M:lint" :dir project-dir)]
+    {:test-output (str (:out test-result) (:err test-result))
+     :lint-output (str (:out lint-result) (:err lint-result))}))
+
+(defn collect
+  "project-dirに対して実際にtest+lintを実行し、qa-governor.governor向けの
+   proposal entry(correctness/consistency)を返す。"
+  [project-dir]
+  (collector/collect (run-test+lint project-dir)))

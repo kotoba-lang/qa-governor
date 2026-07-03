@@ -26,11 +26,23 @@ CLAUDE.mdの「Actors」節にある既存パターン——知能ノード（LL
 
 ## 現在の実装範囲
 
-pure `.cljc` の3namespaceのみ実装済み（`test/`にテストあり）。
-langgraph-clj StateGraphでの実際のQA-LLMノード配線、実リポジトリ
-（テスト実行結果・lint結果・git履歴）からのevidence収集ホストアダプタは
-未実装——`ghosthacker-flow.core`と同型のレイヤ分離方針（pure core先行、
-host adapterは別途）を踏襲している。
+pure `.cljc` の3namespace（rubric/governor/ledger）に加え、決定論的
+（LLM無し）のevidence収集アダプタを実装済み（`test/`にテストあり）:
+
+- **`qa-governor.collectors.clojure-project`**（pure）— `clojure -M:test` /
+  `clojure -M:lint` の出力文字列をparseし、correctness/consistencyの
+  proposal entryを作る。
+- **`qa-governor.collectors.clojure-project-shell`**（JVM host adapter）—
+  実際に`clojure -M:test`/`:lint`を対象repoで実行し、上記pure parserに渡す。
+
+**実際に`ghosthacker-flow`に対して実行した結果**（2026-07-03時点）:
+correctness=100（110 assertions green）、consistency=100（lint 0
+warnings）、governorはどちらも承認。しかし総合スコアは**40.0点（グレードD）**
+——stability/robustness/documentationの3カテゴリは自動測定手段がまだ無く
+「未採点=0点」として扱われるため。これは狙い通りの挙動: 一部カテゴリだけ
+自己申告/自動測定して高得点を演出することを防いでいる。残り3カテゴリの
+自動測定、またはlanggraph-clj StateGraphでの実際のQA-LLMノード配線は
+今後の課題。
 
 ## 使い方（イメージ）
 
