@@ -11,6 +11,28 @@
 (def ^:private source-no-defns
   "(ns foo)\n(def x 1)\n")
 
+;; REGRESSION (found via kami-engine-clj, ADR-2607032600 follow-up): a `def`
+;; embedding guest-language *source text* as a string (e.g. kami-engine-clj's
+;; game-prelude) produces `(defn ...)`-shaped text inside a string literal.
+;; A naive scan miscounted 38 of these as real undocumented functions in
+;; that one project — parse-defn-docstring-coverage must skip matches whose
+;; position falls inside a string literal.
+(def ^:private source-with-embedded-fake-defns
+  "(ns foo)\n(defn bar \"docs\" [x] x)\n(def prelude \"(defn embedded-one [x] x)\n(defn embedded-two \\\"also fake\\\" [y] y)\n\")\n")
+
+(deftest string-literal-ranges-test
+  (testing "文字列リテラルの半開区間を検出する(\"hi\"は\"a \"の2文字後から6文字目の直前まで)"
+    (is (= [[2 6]] (documentation/string-literal-ranges "a \"hi\" b"))))
+  (testing "エスケープされたダブルクォートは終端と見なさない(\\\"y\\\"はz手前まで文字列の中)"
+    (is (= [[3 12]] (documentation/string-literal-ranges "a b\"x\\\"y\\\"z\" c")))))
+
+(deftest parse-defn-docstring-coverage-skips-string-embedded-text-test
+  (testing "文字列リテラル内の`(defn ...)`らしきテキストは実関数として数えない"
+    (let [result (documentation/parse-defn-docstring-coverage source-with-embedded-fake-defns)]
+      (is (= 1 (:total result)) "def文字列内のembedded-one/embedded-twoは数えない")
+      (is (= 1 (:documented result)))
+      (is (== 1.0 (:ratio result))))))
+
 (deftest parse-defn-docstring-coverage-test
   (testing "defn-(private)は数えない、公開defnのみ集計する"
     (let [result (documentation/parse-defn-docstring-coverage source-fully-documented)]
