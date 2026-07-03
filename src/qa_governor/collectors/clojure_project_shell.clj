@@ -9,12 +9,17 @@
 
 (defn run-test+lint
   "project-dirで`clojure -M:test`と`clojure -M:lint`を実行し、
-   {:test-output ... :lint-output ...}(stdout+stderrの結合文字列)を返す。"
+   {:test-output ... :lint-output ... :elapsed-test-ms ...}
+   (stdout+stderrの結合文字列、testの実行時間ms)を返す。elapsed-test-msは
+   qa-governor.collectors.stabilityのハング検知(time-budget超過)に使う。"
   [project-dir]
-  (let [test-result (sh "clojure" "-M:test" :dir project-dir)
+  (let [start (System/currentTimeMillis)
+        test-result (sh "clojure" "-M:test" :dir project-dir)
+        elapsed (- (System/currentTimeMillis) start)
         lint-result (sh "clojure" "-M:lint" :dir project-dir)]
     {:test-output (str (:out test-result) (:err test-result))
-     :lint-output (str (:out lint-result) (:err lint-result))}))
+     :lint-output (str (:out lint-result) (:err lint-result))
+     :elapsed-test-ms elapsed}))
 
 (defn collect
   "project-dirに対して実際にtest+lintを実行し、qa-governor.governor向けの

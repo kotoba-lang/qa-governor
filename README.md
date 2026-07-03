@@ -26,23 +26,33 @@ CLAUDE.mdの「Actors」節にある既存パターン——知能ノード（LL
 
 ## 現在の実装範囲
 
-pure `.cljc` の3namespace（rubric/governor/ledger）に加え、決定論的
-（LLM無し）のevidence収集アダプタを実装済み（`test/`にテストあり）:
+pure `.cljc` の3namespace（rubric/governor/ledger）に加え、**5カテゴリ
+全ての決定論的（LLM無し）evidence収集アダプタ**を実装済み（`test/`に
+テストあり）:
 
 - **`qa-governor.collectors.clojure-project`**（pure）— `clojure -M:test` /
   `clojure -M:lint` の出力文字列をparseし、correctness/consistencyの
-  proposal entryを作る。
-- **`qa-governor.collectors.clojure-project-shell`**（JVM host adapter）—
-  実際に`clojure -M:test`/`:lint`を対象repoで実行し、上記pure parserに渡す。
+  proposal entryを作る。実行は`clojure-project-shell`（JVM host adapter）。
+- **`qa-governor.collectors.stability`**（pure）— `future`/`agent`系を
+  使うのに`shutdown-agents`が無い`-main`を検出する（ghosthacker-flow.terminal
+  実装時に見つけた実バグの回帰ガード）。テスト実行がtime budgetを超えて
+  いないかも見る。
+- **`qa-governor.collectors.robustness`**（pure）— `thrown?`アサーションと
+  guard/boundary系のdeftest名の有無をテストソースから数える。
+- **`qa-governor.collectors.documentation`**（pure）— 公開`defn`の
+  docstringカバレッジ率 + README.md/CHANGELOG.mdの有無。
+- **`qa-governor.collectors.static-analysis-shell`**（JVM host adapter）—
+  上記3collectorにファイル内容を読んで渡す。
+- **`qa-governor.collectors.repo`**（JVM host adapter）— 全collectorを
+  1つのproject-dirに対してまとめて実行する最上位エントリポイント。
 
 **実際に`ghosthacker-flow`に対して実行した結果**（2026-07-03時点）:
-correctness=100（110 assertions green）、consistency=100（lint 0
-warnings）、governorはどちらも承認。しかし総合スコアは**40.0点（グレードD）**
-——stability/robustness/documentationの3カテゴリは自動測定手段がまだ無く
-「未採点=0点」として扱われるため。これは狙い通りの挙動: 一部カテゴリだけ
-自己申告/自動測定して高得点を演出することを防いでいる。残り3カテゴリの
-自動測定、またはlanggraph-clj StateGraphでの実際のQA-LLMノード配線は
-今後の課題。
+全5カテゴリがcorrectness=100/consistency=100/stability=100/robustness=100/
+documentation=100で揃い、governor全承認、**総合スコア100.0（グレードS）**。
+LLMを一切介さず、実際のテスト実行・lint結果・ソースコードの構造だけから
+到達した数字——ここから先はlanggraph-clj StateGraphでの実LLMノード
+（このrepoが機械的に測れない、コード品質の質的な側面を判断する）を
+どう組み合わせるかが今後の課題。
 
 ## 使い方（イメージ）
 
