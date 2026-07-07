@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # deps.edn depends on io.github.com-junkawasaki/langgraph-clj via
+      # :local/root "../../com-junkawasaki/langgraph-clj" -- a cross-org
+      # relative path (two levels up, since $GITHUB_WORKSPACE is nested
+      # as .../work/qa-governor/qa-governor). actions/checkout's own
+      # path: input can't place a checkout outside $GITHUB_WORKSPACE, so
+      # clone directly with git into that exact relative location.
+      - run: mkdir -p ../../com-junkawasaki && git clone --depth 1 https://github.com/com-junkawasaki/langgraph-clj.git ../../com-junkawasaki/langgraph-clj
       - name: Install Clojure CLI
         uses: DeLaGuardo/setup-clojure@13.0
         with:
