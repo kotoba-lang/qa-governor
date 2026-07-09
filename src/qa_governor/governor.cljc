@@ -14,7 +14,12 @@
    主張と矛盾する』という簡易ルール。実運用ではCI/テスト実行ログの構造化
    パースに置き換える必要がある(ADR Open Questions参照、今回はscaffold)。"
   {:stability   #"(?i)\bhang|\bhung|crash|deadlock|timeout"
-   :correctness #"(?i)failure|error|fail\b"})
+   ;; `\bfail` (word-boundary at the START only) so it matches fail/failed/
+   ;; failing/fails/failure -- `fail\b` (boundary at the END) matched only
+   ;; the bare word "fail" and silently missed the far more common past/
+   ;; present-participle phrasing a real evidence string uses ("3 tests
+   ;; failed", "all tests failing").
+   :correctness #"(?i)failure|error|\bfail"})
 
 (def ^:private high-score-threshold
   "この値以上の自己申告scoreは、矛盾evidenceが無いか厳しめに確認する。"

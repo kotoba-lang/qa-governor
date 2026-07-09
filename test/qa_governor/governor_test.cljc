@@ -22,6 +22,34 @@
                                  {:category :documentation :score 100
                                   :evidence "README up to date"}))))))
 
+(deftest correctness-contradiction-catches-common-phrasing
+  (testing "regression: the :correctness contradiction pattern used `fail\\b`
+            (word boundary at the END), which only matched the bare word
+            \"fail\" and silently missed the past/present-participle
+            phrasing (\"failed\"/\"failing\") a real evidence string
+            actually uses -- these are the most likely real-world wordings,
+            not the bare-word edge case"
+    (is (= :rejected (:verdict (governor/evaluate-entry
+                                 {:category :correctness :score 100
+                                  :evidence "3 tests failed, needs investigation"})))
+        "\"failed\" must be caught")
+    (is (= :rejected (:verdict (governor/evaluate-entry
+                                 {:category :correctness :score 100
+                                  :evidence "all tests failing after refactor"})))
+        "\"failing\" must be caught")
+    (is (= :rejected (:verdict (governor/evaluate-entry
+                                 {:category :correctness :score 100
+                                  :evidence "3 tests fail after refactor"})))
+        "the bare word \"fail\" was already caught -- must stay caught"))
+  (testing "no false positive on an unrelated word merely containing similar letters"
+    (is (= :approved (:verdict (governor/evaluate-entry
+                                 {:category :correctness :score 100
+                                  :evidence "detailed test coverage report attached"})))))
+  (testing "below the high-score threshold, contradicting wording doesn't matter"
+    (is (= :approved (:verdict (governor/evaluate-entry
+                                 {:category :correctness :score 50
+                                  :evidence "3 tests failed"}))))))
+
 (deftest evaluate-proposal-test
   (testing "1件でも却下があればall-approved?はfalse"
     (let [result (governor/evaluate-proposal
