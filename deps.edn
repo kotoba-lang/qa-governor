@@ -6,7 +6,8 @@
 
  :deps {org.clojure/clojure {:mvn/version "1.12.0"}
         io.github.kotoba-lang/langgraph
-        {:local/root "../langgraph"}}
+        {:git/url "https://github.com/kotoba-lang/langgraph.git"
+                                     :git/sha "577a59a9d5eb3ef90b81342f4673973f481ff7f4"}}
 
  :aliases
  {;; offline workspace dev — pin transitive langchain (langgraph-clj's own
