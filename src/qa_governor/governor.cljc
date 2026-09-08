@@ -4,7 +4,7 @@
   commitをactorは決して行わない』をQAに適用する: 知能ノード(LLM)が返す
   カテゴリごとの採点を、evidenceなしに、または主張と矛盾するevidenceのまま
   無条件で信用しない。"
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (defn- has-evidence? [{:keys [evidence]}]
   (and (some? evidence) (not (str/blank? (str evidence)))))

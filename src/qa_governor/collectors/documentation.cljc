@@ -20,7 +20,7 @@
   direction (treating more text as \"inside a string\", so scanning skips it)
   only risks under-counting real defns, never over-counting fake ones,
   which is the safer of the two directions for a coverage signal."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (defn string-literal-ranges
   "[start end) 半開区間のvector: sourceの文字列リテラル(\"...\")が占める

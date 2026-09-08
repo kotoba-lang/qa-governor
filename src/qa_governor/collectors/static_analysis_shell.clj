@@ -5,7 +5,7 @@
   where real file I/O happens; the collectors themselves stay pure and
   host-free."
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [qa-governor.collectors.stability :as stability]
             [qa-governor.collectors.robustness :as robustness]
             [qa-governor.collectors.documentation :as documentation]))
