@@ -1,6 +1,6 @@
 (ns qa-governor.collectors.clojure-project
   "kotoba-lang/qa-governor — deterministic (non-LLM) evidence collector for
-  Clojure projects that use `clojure -M:test` / `clojure -M:lint` (ADR-2607031100).
+  Clojure projects that use `kbb -M:test` / `kbb -M:lint` (ADR-2607031100).
 
   Pure parsing only: takes already-captured stdout/stderr text and returns
   data + a proposal entry with REAL evidence (the parsed summary line), not
@@ -31,7 +31,7 @@
      :summary (or (first m) "no lint summary line found")}))
 
 (defn correctness-entry
-  "test-output(clojure -M:testの標準出力+標準エラー文字列)から
+  "test-output(kbb -M:testの標準出力+標準エラー文字列)から
    qa-governor.governor向けのproposal entryを作る。"
   [test-output]
   (let [{:keys [summary clean?]} (parse-test-output test-output)]
@@ -40,7 +40,7 @@
      :evidence (str "clojure -M:test: " summary)}))
 
 (defn consistency-entry
-  "lint-output(clojure -M:lintの標準出力+標準エラー文字列)から
+  "lint-output(kbb -M:lintの標準出力+標準エラー文字列)から
    qa-governor.governor向けのproposal entryを作る。
    errors>0なら0点、warningsのみなら按分、両方0ならsatisfied。"
   [lint-output]
