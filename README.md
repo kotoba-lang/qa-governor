@@ -30,8 +30,8 @@ pure `.cljc` の3namespace（rubric/governor/ledger）に加え、**5カテゴ�
 全ての決定論的（LLM無し）evidence収集アダプタ**を実装済み（`test/`に
 テストあり）:
 
-- **`qa-governor.collectors.clojure-project`**（pure）— `clojure -M:test` /
-  `clojure -M:lint` の出力文字列をparseし、correctness/consistencyの
+- **`qa-governor.collectors.clojure-project`**（pure）— `kbb -M:test` /
+  `kbb -M:lint` の出力文字列をparseし、correctness/consistencyの
   proposal entryを作る。実行は`clojure-project-shell`（JVM host adapter）。
 - **`qa-governor.collectors.stability`**（pure）— `future`/`agent`系を
   使うのに`shutdown-agents`が無い`-main`を検出する（ghosthacker-flow.terminal
@@ -124,13 +124,13 @@ holdの監査痕跡はledgerでなく、その run固有の`:audit`チャンネ�
 override）を付けて実行する:
 
 ```bash
-clojure -M:dev:test
+kbb -M:dev:test
 ```
 
 Lint（clj-kondo、Clojars経由でHomebrew等の別インストール不要）:
 
 ```bash
-clojure -M:lint
+kbb -M:lint
 ```
 
 ## ライセンス

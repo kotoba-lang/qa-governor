@@ -27,7 +27,7 @@
     - now-ms-fn    (System/currentTimeMillis | a fixed clock in tests)
 
   This is JVM-only (.clj, not .cljc): collect-fn's real implementation shells
-  out to `clojure -M:test`/`:lint` (qa-governor.collectors.clojure-project-shell),
+  out to `kbb -M:test`/`:lint` (qa-governor.collectors.clojure-project-shell),
   which has no cljs/SCI equivalent — matching collectors.repo's own scope."
   (:require [langgraph.graph :as g]
             [langgraph.checkpoint :as cp]
