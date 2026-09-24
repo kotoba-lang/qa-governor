@@ -4,17 +4,17 @@
   collectors (stability/robustness/documentation, ADR-2607031100). This is
   where real file I/O happens; the collectors themselves stay pure and
   host-free."
-  (:require [clojure.java.io :as io]
+  (:require [kotoba.io :as io]
             [kotoba.lang.text :as str]
             [qa-governor.collectors.stability :as stability]
             [qa-governor.collectors.robustness :as robustness]
             [qa-governor.collectors.documentation :as documentation]))
 
 (defn- clj-source-files [dir]
-  (when (.isDirectory (io/file dir))
-    (->> (file-seq (io/file dir))
-         (filter #(.isFile %))
-         (filter #(re-find #"\.clj[cs]?$" (.getName %))))))
+  (when (io/directory? (io/file dir))
+    (->> (io/file-seq (io/file dir))
+         (filter #(io/file? %))
+         (filter #(re-find #"\.clj[cs]?$" (io/file-name %))))))
 
 (defn- slurp-all [files]
   (str/join "\n" (map slurp files)))
@@ -33,8 +33,8 @@
   [project-dir & [elapsed-test-ms]]
   (let [source (slurp-all (clj-source-files (io/file project-dir "src")))
         test-source (slurp-all (clj-source-files (io/file project-dir "test")))
-        readme? (.exists (io/file project-dir "README.md"))
-        changelog? (.exists (io/file project-dir "CHANGELOG.md"))]
+        readme? (io/exists? (io/file project-dir "README.md"))
+        changelog? (io/exists? (io/file project-dir "CHANGELOG.md"))]
     [(stability/stability-entry {:main-sources (main-bearing-sources project-dir)
                                   :elapsed-test-ms elapsed-test-ms})
      (robustness/robustness-entry {:test-source test-source})

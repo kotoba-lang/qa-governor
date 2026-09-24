@@ -4,7 +4,7 @@
   captured output to the pure parsers in `qa-governor.collectors.clojure-project`
   (ADR-2607031100). This is where real I/O happens; everything else in this
   library stays pure and host-free."
-  (:require [clojure.java.shell :refer [sh]]
+  (:require [kotoba.process :refer [sh]]
             [qa-governor.collectors.clojure-project :as collector]))
 
 (defn run-test+lint
