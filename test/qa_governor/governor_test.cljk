@@ -1,5 +1,5 @@
 (ns qa-governor.governor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [qa-governor.governor :as governor]))
 
 (deftest evaluate-entry-test

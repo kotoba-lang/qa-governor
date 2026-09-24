@@ -1,5 +1,5 @@
 (ns qa-governor.collectors.robustness-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [qa-governor.collectors.robustness :as robustness]))
 
 (def ^:private rich-test-source
