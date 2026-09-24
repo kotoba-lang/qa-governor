@@ -1,5 +1,5 @@
 (ns qa-governor.collectors.documentation-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [qa-governor.collectors.documentation :as documentation]))
 
 (def ^:private source-fully-documented

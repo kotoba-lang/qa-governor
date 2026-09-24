@@ -1,5 +1,5 @@
 (ns qa-governor.collectors.clojure-project-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [qa-governor.collectors.clojure-project :as collector]))
 
 (def ^:private clean-test-output

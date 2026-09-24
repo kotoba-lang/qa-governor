@@ -1,5 +1,5 @@
 (ns qa-governor.ledger-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [qa-governor.ledger :as ledger]))
 
 (deftest record-and-history-test

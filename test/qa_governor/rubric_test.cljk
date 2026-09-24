@@ -1,5 +1,5 @@
 (ns qa-governor.rubric-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [qa-governor.rubric :as rubric]))
 
 (deftest weighted-score-test

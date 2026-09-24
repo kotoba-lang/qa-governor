@@ -3,7 +3,7 @@
   open question). Uses a pure test-double collect-fn — no real shell-out —
   so this suite stays fast/deterministic and independent of any repo's
   actual test/lint state."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [langgraph.graph :as g]
             [qa-governor.operation :as op]
             [qa-governor.ledger :as ledger]))
