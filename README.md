@@ -4,7 +4,7 @@
 設計は [ADR-2607031100](../../../90-docs/adr/2607031100-kotoba-lang-qa-governor-actor.md)
 （superproject `com-junkawasaki/root`）を参照。
 
-CLAUDE.mdの「Actors」節にある既存パターン——知能ノード（LLM）を1ノードに
+AGENTS.mdの「Actors」節にある既存パターン——知能ノード（LLM）を1ノードに
 封じ込め *proposal のみ* 返させ、別系統のgovernorが検閲する。単一不変条件
 「governorが拒否するcommitをactorは決して行わない」——をQAに転用したもの。
 `ghosthacker-flow`（[ADR-2607023200](../../../90-docs/adr/2607023200-ghosthacker-game-portfolio-flow.md)）
